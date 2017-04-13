@@ -1,0 +1,34 @@
+---
+- name: Correct timezone
+  timezone: "name={{ dt_timezone }}"
+
+- name: Generate locale
+  locale_gen: "name={{ dt_locale }}"
+
+- name: Correct locale
+  lineinfile:
+    dest: /etc/default/locale
+    regexp: "^{{item}}="
+    line: "{{ item }}={{ dt_locale }}"
+  with_items: "{{ dt_localekeys }}"
+
+- name: Check if ntp service is exists
+  stat: path=/etc/init.d/ntp
+  register: ntp_status
+
+- name: Stop ntp service
+  service: "name=ntp state=stopped"
+  when: ntp_status.stat.exists
+
+- name: Sync time
+  command: "/usr/sbin/ntpdate {{ ntp_server }}"
+
+- name: Add ntp server if ntp server exists
+  lineinfile:
+    dest: /etc/ntp.conf
+    line: "server {{ ntp_server }}"
+  when: ntp_status.stat.exists
+
+- name: Stop ntp service
+  service: "name=ntp state=started"
+  when: ntp_status.stat.exists
