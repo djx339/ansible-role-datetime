@@ -18,4 +18,4 @@ dt_localekeys:
     - LC_IDENTIFICATION
     - LC_ALL
 
-ntp_server: corp.intel.com
+ntp_server: 0.asia.pool.ntp.org
