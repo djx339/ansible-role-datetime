@@ -21,12 +21,12 @@
   when: ntp_status.stat.exists
 
 - name: Sync time
-  command: "/usr/sbin/ntpdate {{ ntp_server }}"
+  command: "/usr/sbin/ntpdate {{ dt_ntp_server }}"
 
 - name: Add ntp server if ntp server exists
   lineinfile:
     dest: /etc/ntp.conf
-    line: "server {{ ntp_server }}"
+    line: "server {{ dt_ntp_server }}"
   when: ntp_status.stat.exists
 
 - name: Stop ntp service
